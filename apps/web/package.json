@@ -1,6 +1,5 @@
 {
 	"name": "@chinese-chess/web",
-	"private": true,
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
@@ -40,6 +39,6 @@
 		"lucide-svelte": "^0.291.0",
 		"tailwind-merge": "^2.0.0",
 		"tailwind-variants": "^0.1.18",
-		"@chinese-chess/utils": "workspace:*"
+		"@chinese-chess/utils": "*"
 	}
 }

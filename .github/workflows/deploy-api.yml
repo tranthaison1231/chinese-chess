@@ -24,11 +24,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - name: Install dependencies
-        run: pnpm install
+        run: yarn install
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -38,5 +35,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Deploy
-        run: pnpm run deploy
+        run: yarn deploy
       
