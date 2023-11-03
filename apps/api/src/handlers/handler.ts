@@ -42,7 +42,6 @@ export async function onHandler(event: AWSLambda.APIGatewayProxyWebsocketEventV2
     default:
       break;
   }
-
   return {
     statusCode: 200,
   };
