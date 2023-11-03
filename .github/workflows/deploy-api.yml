@@ -4,7 +4,7 @@ on:
   push:
     branches: [master]
     paths:
-      - 'apps/api'
+      - 'apps/api/**'
 jobs:
   Deploy:
     env: 
