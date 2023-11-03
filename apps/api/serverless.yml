@@ -1,0 +1,108 @@
+service: chess-game-api
+frameworkVersion: "3"
+
+configValidationMode: error
+
+plugins:
+  - serverless-prune-plugin
+  - serverless-offline
+  - serverless-esbuild
+
+useDotenv: true
+
+provider:
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL}
+    APIG_ENDPOINT:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: WebsocketsApi
+          - .execute-api.
+          - Ref: AWS::Region
+          - .amazonaws.com/
+          - ${self:provider.stage}
+  websocketsApiName: websockets-api
+  websocketsApiRouteSelectionExpression: $request.body.action
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  region: ap-southeast-1
+  versionFunctions: false
+  iam:
+    role: 
+      statements:
+        - Effect: Allow
+          Action: 
+            - 's3:*'
+          Resource: '*'
+
+custom:
+  baseName: ${self:service}-${self:provider.region}
+  prune: 
+    automatic: true
+    number: 3
+  esbuild:
+    platform: "node"
+    target: node18
+    sourcemap: linked
+package:
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'
+    - 'node_modules/.prisma/client/schema.prisma'
+  individually: true
+
+functions:
+  onConnect:
+    handler: src/handlers/handler.onConnect
+    events:
+      - websocket:
+          route: $connect
+  onDisconnect:
+    handler: src/handlers/handler.onDisconnect
+    events:
+      - websocket:
+          route: $disconnect
+  onHandler:
+    handler: src/handlers/handler.onHandler
+    events:
+      - websocket:
+          route: $default
+
+resources:
+  Resources:
+    ApiDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+          - Id: ApiGateway
+            DomainName:
+              Fn::Join:
+                - ""
+                - - Ref: WebsocketsApi
+                  - .execute-api.
+                  - Ref: AWS::Region
+                  - .amazonaws.com
+            OriginPath: '/${self:provider.stage}'
+            CustomOriginConfig:
+              HTTPPort: '80'
+              HTTPSPort: '443'
+              OriginProtocolPolicy: https-only
+              OriginSSLProtocols: [ "TLSv1.2" ]
+          Enabled: 'true'
+          DefaultCacheBehavior:
+            ViewerProtocolPolicy: redirect-to-https
+            TargetOriginId: ApiGateway
+            Compress: true
+            OriginRequestPolicyId: '03f9ae96-49a6-41d8-9151-91b8576bcfcd'
+            CachePolicyId: '4135ea2d-6df8-44a3-9df3-4b5a84be39ad'
+
+  Outputs:
+    ApiDistribution:
+      Value:
+        Fn::GetAtt: [ ApiDistribution, DomainName ]     

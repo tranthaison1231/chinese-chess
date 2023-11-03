@@ -11,7 +11,7 @@
     "dev": "turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "dev:web": "turbo run dev --filter=web.."
+    "dev:web": "turbo run dev --filter=web"
   },
   "keywords": [],
   "author": "Son Tran",

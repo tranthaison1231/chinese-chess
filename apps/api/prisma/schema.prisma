@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
+}
+
+generator erd {
+  provider = "prisma-erd-generator-markdown"
+  output   = "./ERD.md"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id       String  @id
+  username String?
+  roomID   String
+  room     Room    @relation(fields: [roomID], references: [id])
+
+  GameAsPlayer1 Game[] @relation(name: "player_1")
+  GameAsPlayer2 Game[] @relation(name: "player_2")
+
+  @@index([roomID])
+}
+
+model Room {
+  id    String @id
+  users User[]
+  game Game?
+}
+
+enum Status {
+  PENDING
+  ACTIVE
+}
+
+enum Turn {
+  RED
+  BLACK
+}
+
+model Game {
+  id        String  @id
+  roomID    String  @unique
+  turn      Turn    @default(RED)
+  room      Room    @relation(fields: [roomID], references: [id])
+  status    Status  @default(PENDING)
+
+
+  player1   User?   @relation(name: "player_1", fields: [player1ID], references: [id])
+  player2   User?   @relation(name: "player_2", fields: [player2ID], references: [id])
+  player1ID String?
+  player2ID String?
+
+  @@index([player1ID])
+  @@index([player2ID])
+}

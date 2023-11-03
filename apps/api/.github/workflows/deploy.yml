@@ -1,0 +1,32 @@
+name: CICD
+
+on:
+  push:
+    branches: [master]
+jobs:
+  Deploy:
+    env: 
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    runs-on: [ubuntu-latest]
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: yarn install
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-southeast-1
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Deploy
+        run: yarn deploy
+      
