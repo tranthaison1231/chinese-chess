@@ -1,0 +1,22 @@
+{
+  "name": "chinese-chess",
+  "version": "1.0.0",
+  "packageManager": "pnpm@8.9.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "dev:web": "turbo run dev --filter=web.."
+  },
+  "keywords": [],
+  "author": "Son Tran",
+  "license": "ISC",
+  "devDependencies": {
+    "turbo": "^1.10.16"
+  }
+}
