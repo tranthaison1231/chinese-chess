@@ -20,12 +20,16 @@ jobs:
         node-version: [20]
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4

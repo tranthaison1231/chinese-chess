@@ -30,6 +30,6 @@
     "@aws-sdk/client-apigatewaymanagementapi": "^3.441.0",
     "@prisma/client": "^5.5.2",
     "dotenv": "^16.3.1",
-    "@chinese-chess/utils": "*"
+    "@chinese-chess/utils": "workspace:*"
   }
 }
