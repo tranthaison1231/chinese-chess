@@ -11,10 +11,6 @@ jobs:
     env: 
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     runs-on: [ubuntu-latest]
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./apps/api
     strategy:
       matrix:
         node-version: [20]
@@ -24,6 +20,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Checkout code from apps/api
+        run: cd apps/api
+        
       - name: Install dependencies
         run: yarn install
         
