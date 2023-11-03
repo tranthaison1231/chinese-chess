@@ -1,0 +1,21 @@
+{
+  "name": "@chinese-chess/database",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "browser": "index-browser.js",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev --skip-generate",
+    "db:push": "prisma db push --skip-generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.5.2",
+    "prisma": "^5.5.2"
+  },
+  "devDependencies": {
+    "@chinese-chess/tsconfig": "workspace:*",
+    "@types/node": "^20.8.10",
+    "prisma-erd-generator-markdown": "^1.3.1",
+    "typescript": "^5.2.2"
+  }
+}
