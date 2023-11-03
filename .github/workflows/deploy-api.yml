@@ -25,7 +25,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: pwd
+        run: yarn install
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
