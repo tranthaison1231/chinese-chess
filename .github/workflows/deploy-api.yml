@@ -11,6 +11,10 @@ jobs:
     env: 
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     runs-on: [ubuntu-latest]
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./apps/api
     strategy:
       matrix:
         node-version: [20]
@@ -20,9 +24,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-
+          
       - name: Install dependencies
-        run: cd apps/api && yarn install
+        run: yarn install
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -32,5 +36,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Deploy
-        run: cd apps/api && yarn deploy
+        run: yarn deploy
       
