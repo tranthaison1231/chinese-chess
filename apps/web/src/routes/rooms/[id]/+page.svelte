@@ -9,7 +9,7 @@
 	import Timer from '$lib/components/Timer.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { notification } from '$lib/components/ui/notification';
-	import { ACTIONS } from '$lib/constants/socket';
+	import { ACTIONS } from '@chinese-chess/utils';
 	import { Chess, resetChesses } from '$lib/services/chess';
 	import { isPlayer, me, myTurn, room } from '$lib/stores';
 	import { cn } from '$lib/utils/cn';
@@ -27,9 +27,7 @@
 	$: player1 = $room?.game?.player1;
 	$: player2 = $room?.game?.player2;
 	$: isGameActive = $room?.game?.status === Status.ACTIVE;
-	$: isShowReadyButton = Boolean(
-		!isGameActive && isPlayer && player1?.id && player2?.id
-	);
+	$: isShowReadyButton = Boolean(!isGameActive && isPlayer && player1?.id && player2?.id);
 
 	onMount(() => {
 		const searchParams = new URLSearchParams(window.location.search);
@@ -57,8 +55,8 @@
 						content: data.content
 					}
 				];
-				await tick()
-				if(chatEl) {
+				await tick();
+				if (chatEl) {
 					chatEl.scrollTop = chatEl.scrollHeight;
 				}
 			}
@@ -146,13 +144,11 @@
 		);
 	};
 
-	function sendMessage (e: CustomEvent<{ content: string }>) {
+	function sendMessage(e: CustomEvent<{ content: string }>) {
 		const { content } = e.detail;
 		ws.send(JSON.stringify({ action: ACTIONS.ROOM.MESSAGE, content, roomID, user: $me }));
 	}
 
-
-		
 	beforeNavigate(({ cancel }) => {
 		if (!confirm('When you leave, you will lose the game?')) {
 			cancel();
@@ -180,14 +176,14 @@
 					on:click={() => joinSit(1)}
 				>
 					{#if player1 && $me?.id === player1?.id}
-						<button class="absolute top-2 right-2" on:click|stopPropagation={() => removeSit(1)}>
+						<button class="absolute right-2 top-2" on:click|stopPropagation={() => removeSit(1)}>
 							<X />
 						</button>
 					{/if}
 					{player1 ? player1.username : 'Player 1'}
 				</button>
 				{#key isGameActive}
-				<Timer on={$room?.game?.turn === Color.RED  && isGameActive} on:end={handleSurrender}/>
+					<Timer on={$room?.game?.turn === Color.RED && isGameActive} on:end={handleSurrender} />
 				{/key}
 				<button
 					class={cn('relative w-full border p-2 text-center text-xl', {
@@ -196,14 +192,14 @@
 					on:click={() => joinSit(2)}
 				>
 					{#if player2 && $me?.id === player2?.id}
-						<button class="absolute top-2 right-2" on:click|stopPropagation={() => removeSit(2)}>
+						<button class="absolute right-2 top-2" on:click|stopPropagation={() => removeSit(2)}>
 							<X />
 						</button>
 					{/if}
 					{player2 ? player2.username : 'Player 2'}
 				</button>
 				{#key isGameActive}
-				<Timer on={$room?.game?.turn === Color.BLACK && isGameActive} on:end={handleSurrender}/>
+					<Timer on={$room?.game?.turn === Color.BLACK && isGameActive} on:end={handleSurrender} />
 				{/key}
 			</div>
 			{#if isGameActive && isPlayer}
@@ -211,6 +207,6 @@
 				<Button variant="destructive" on:click={handleTakeBack}>Take back</Button>
 			{/if}
 		</div>
-		<ChatList bind:chatEl={chatEl} {messages} on:sendMessage={sendMessage} />
+		<ChatList bind:chatEl {messages} on:sendMessage={sendMessage} />
 	</div>
 </div>
