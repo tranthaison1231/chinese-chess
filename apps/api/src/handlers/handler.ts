@@ -1,5 +1,5 @@
 import { enterRoom, leaveRoom, sendMessage, endGame, playerSit, removeSit, startGame, moveGame } from '@/lib/actions';
-import { ACTIONS } from '@/lib/constants';
+import { ACTIONS } from '@chinese-chess/utils';
 
 export async function onConnect(event: AWSLambda.APIGatewayProxyWebsocketEventV2) {
   return {

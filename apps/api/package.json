@@ -8,7 +8,7 @@
     "dev": "serverless offline start",
     "deploy": "serverless deploy",
     "postinstall": "prisma generate",
-    "check-types": "tsc --noEmit"
+    "check": "tsc --noEmit"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -29,6 +29,7 @@
   "dependencies": {
     "@aws-sdk/client-apigatewaymanagementapi": "^3.441.0",
     "@prisma/client": "^5.5.2",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "@chinese-chess/utils": "*"
   }
 }

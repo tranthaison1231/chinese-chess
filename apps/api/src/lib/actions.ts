@@ -1,5 +1,5 @@
 import { GamesService } from '@/services/games.service';
-import { ACTIONS } from './constants';
+import { ACTIONS } from '@chinese-chess/utils';
 import { ConnectionService } from '@/services/connection.service';
 import { RoomsService } from '@/services/rooms.service';
 import { UsersService } from '@/services/users.service';
@@ -47,7 +47,7 @@ export const enterRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
       connection.publish(
         event,
         JSON.stringify({
-          action: ACTIONS.ROOM.me,
+          action: ACTIONS.ROOM.ME,
           me: user,
         })
       ),
