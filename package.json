@@ -16,6 +16,9 @@
   "keywords": [],
   "author": "Son Tran",
   "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.5.2"
+  },
   "devDependencies": {
     "turbo": "^1.10.16"
   }
