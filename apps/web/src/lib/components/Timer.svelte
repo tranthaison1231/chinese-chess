@@ -6,7 +6,7 @@
 
 	let timeout: number = 900;
 	let now = Date.now();
-	let interval: ReturnType<typeof setInterval>;
+	let interval: ReturnType<typeof setInterval>;5
 
 	$: end = now + timeout * 1000;
 	$: count = Math.round((end - now) / 1000);
