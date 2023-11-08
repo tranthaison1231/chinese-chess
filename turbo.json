@@ -6,6 +6,7 @@
       "outputs": [".svelte-kit/**", ".vercel/**"],
       "env": ["PUBLIC_API_URL"]
     },
+    "deploy": {},
     "lint": {},
     "format": {},
     "check": {},
