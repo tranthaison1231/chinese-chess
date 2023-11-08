@@ -12,10 +12,6 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       IS_OFFLINE: ${{ secrets.IS_OFFLINE }}
     runs-on: [ubuntu-latest]
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./apps/api
     strategy:
       matrix:
         node-version: [20]
@@ -40,5 +36,5 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Deploy
-        run: yarn deploy
+        run: pnpm run deploy
       

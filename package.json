@@ -13,7 +13,8 @@
     "format": "turbo run format",
     "check": "turbo run check --parallel",
     "dev:web": "turbo run dev --filter=web",
-    "dev:api": "turbo run dev --filter=api"
+    "dev:api": "turbo run dev --filter=api",
+    "deploy:api": "turbo run deploy --filter=api"
   },
   "keywords": [],
   "author": "Son Tran",
