@@ -12,7 +12,8 @@
     "lint": "turbo run lint",
     "format": "turbo run format",
     "check": "turbo run check --parallel",
-    "dev:web": "turbo run dev --filter=web"
+    "dev:web": "turbo run dev --filter=web",
+    "dev:api": "turbo run dev --filter=api"
   },
   "keywords": [],
   "author": "Son Tran",
