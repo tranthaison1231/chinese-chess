@@ -12,6 +12,7 @@ $ serverless offline start
 ```
 
 Deploy your project
+
 ```bash
 $ serverless deploy
 ```
