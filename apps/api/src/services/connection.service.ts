@@ -1,16 +1,16 @@
 import { db } from '@/lib/db';
 import { ApiGatewayManagementApiClient, PostToConnectionCommand } from '@aws-sdk/client-apigatewaymanagementapi';
-import { Status, User } from '@prisma/client';
-import { UsersService } from './users.service';
-import { RoomsService } from './rooms.service';
+import { User } from '@prisma/client';
 import { GamesService } from './games.service';
+import { RoomsService } from './rooms.service';
+import { UsersService } from './users.service';
 
 export class ConnectionService {
   gateway: ApiGatewayManagementApiClient;
   constructor() {
     this.gateway = new ApiGatewayManagementApiClient({
       apiVersion: '2018-11-29',
-      endpoint: process.env.APIG_ENDPOINT,
+      endpoint: process.env.IS_OFFLINE ? 'ws://localhost:3001' : process.env.APIG_ENDPOINT,
     });
   }
   async joinRoom(roomID: string, user: User) {
