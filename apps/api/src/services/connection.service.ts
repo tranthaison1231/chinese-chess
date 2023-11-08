@@ -10,7 +10,7 @@ export class ConnectionService {
   constructor() {
     this.gateway = new ApiGatewayManagementApiClient({
       apiVersion: '2018-11-29',
-      endpoint: process.env.IS_OFFLINE ? 'ws://localhost:3001' : process.env.APIG_ENDPOINT,
+      endpoint: process.env.IS_OFFLINE === 'true' ? 'ws://localhost:3001' : process.env.APIG_ENDPOINT,
     });
   }
   async joinRoom(roomID: string, user: User) {
