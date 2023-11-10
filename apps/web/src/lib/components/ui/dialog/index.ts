@@ -6,4 +6,4 @@ const Close = DialogPrimitive.Close;
 
 import Content from './dialog-content.svelte';
 
-export { Close, Root, Trigger, Content };
+export { Close, Content, Root, Trigger };

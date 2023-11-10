@@ -1,4 +1,4 @@
-import { Status, type Room, type User, Color } from '$lib/utils/type';
+import { Color, Status, type Room, type User } from '$lib/utils/type';
 import { derived, writable } from 'svelte/store';
 
 export const room = writable<Room>({
