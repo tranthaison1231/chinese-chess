@@ -42,7 +42,7 @@ export class ConnectionService {
     await this.gateway.send(command);
   }
 
-  async publishToRoom(roomID: string, event: AWSLambda.APIGatewayProxyWebsocketEventV2, data: string) {
+  async publishToRoom(roomID: string, _event: AWSLambda.APIGatewayProxyWebsocketEventV2, data: string) {
     const users = await UsersService.getAllBy(roomID);
     for (const { id } of users) {
       try {

@@ -1,7 +1,7 @@
 import { enterRoom, leaveRoom, sendMessage, endGame, playerSit, removeSit, startGame, moveGame } from '@/lib/actions';
 import { ACTIONS } from '@chinese-chess/utils';
 
-export async function onConnect(event: AWSLambda.APIGatewayProxyWebsocketEventV2) {
+export async function onConnect(_event: AWSLambda.APIGatewayProxyWebsocketEventV2) {
   return {
     statusCode: 200,
   };

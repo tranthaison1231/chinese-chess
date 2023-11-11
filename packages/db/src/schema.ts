@@ -1,7 +1,5 @@
-import { connect } from '@planetscale/database';
 import { relations } from 'drizzle-orm';
 import { mysqlEnum, mysqlTable, uniqueIndex, varchar } from 'drizzle-orm/mysql-core';
-import { drizzle } from 'drizzle-orm/planetscale-serverless';
 
 export const users = mysqlTable(
   'User',

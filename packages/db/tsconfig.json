@@ -1,14 +1,9 @@
 {
+  "extends": "@chinese-chess/tsconfig/base.json",
   "compilerOptions": {
     "target": "es2017",
-    "module": "commonjs",
     "lib": ["ES2020"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "forceConsistentCasingInFileNames": true,
+    "module": "NodeNext",
     "outDir": "dist",
     "rootDir": "./",
     "sourceMap": true,
@@ -17,6 +12,5 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", ".serverless"]
+  "include": ["src/**/*"]
 }

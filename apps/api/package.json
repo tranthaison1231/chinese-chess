@@ -24,6 +24,7 @@
   "dependencies": {
     "@aws-sdk/client-apigatewaymanagementapi": "^3.445.0",
     "@chinese-chess/utils": "workspace:*",
-    "@chinese-chess/db": "workspace:*"
+    "@chinese-chess/db": "workspace:*",
+    "@chinese-chess/tsconfig": "workspace:*"
   }
 }

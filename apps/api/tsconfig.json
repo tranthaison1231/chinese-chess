@@ -1,14 +1,9 @@
 {
+  "extends": "@chinese-chess/tsconfig/base.json",
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
     "lib": ["ES2020", "DOM"],
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "strictNullChecks": true,
-    "noUncheckedIndexedAccess": true,
-    "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "rootDir": "./",
     "sourceMap": true,

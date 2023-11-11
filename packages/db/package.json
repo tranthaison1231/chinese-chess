@@ -5,12 +5,14 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
-    "seed": "ts-node src/seed.ts"
+    "seed": "ts-node src/seed.ts",
+    "check": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^20.8.10",
     "dotenv": "^16.3.1",
-    "ts-node": "^10.9.1"
+    "ts-node": "^10.9.1",
+    "@chinese-chess/tsconfig": "workspace:*"
   },
   "dependencies": {
     "drizzle-orm": "^0.29.0",
