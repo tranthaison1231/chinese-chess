@@ -3,7 +3,6 @@ import { ACTIONS } from '@chinese-chess/utils';
 import { ConnectionService } from '@/services/connection.service';
 import { RoomsService } from '@/services/rooms.service';
 import { UsersService } from '@/services/users.service';
-import { Status, Turn } from '@prisma/client';
 
 let connection;
 
@@ -111,7 +110,7 @@ export const moveGame = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2)
   const body = JSON.parse(event.body ?? '{}');
   const { roomID, from, to, gameID, turn } = body;
   try {
-    await GamesService.updateTurn(gameID, turn === Turn.RED ? Turn.BLACK : Turn.RED);
+    await GamesService.updateTurn(gameID, turn === 'RED' ? 'BLACK' : 'RED');
     const room = await RoomsService.getBy(roomID);
     await connection.publishToRoom(
       roomID,
@@ -136,12 +135,9 @@ export const leaveRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
   try {
     const connection = new ConnectionService();
     const user = await UsersService.getBy(connectionId);
-    if (user) {
+    if (user?.roomID) {
       const room = await RoomsService.getBy(user.roomID);
-      if (
-        room?.game?.status === Status.ACTIVE &&
-        (room?.game?.player1ID === user.id || room?.game?.player2ID === user.id)
-      ) {
+      if (room?.game?.status === 'ACTIVE' && (room?.game?.player1ID === user.id || room?.game?.player2ID === user.id)) {
         await connection.publishToRoom(
           user.roomID,
           event,

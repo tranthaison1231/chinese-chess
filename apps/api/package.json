@@ -7,17 +7,14 @@
   "scripts": {
     "dev": "serverless offline start",
     "deploy": "serverless deploy",
-    "postinstall": "prisma generate",
-    "check": "tsc --noEmit"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "check": "tsc --noEmit",
+    "seed": "ts-node src/db/seed.ts"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.126",
+    "@types/node": "^20.8.10",
+    "dotenv": "^16.3.1",
     "esbuild": "^0.19.5",
-    "prisma": "^5.5.2",
-    "prisma-erd-generator-markdown": "^1.3.1",
     "serverless": "^3.36.0",
     "serverless-esbuild": "^1.48.5",
     "serverless-offline": "^13.2.1",
@@ -28,8 +25,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-apigatewaymanagementapi": "^3.445.0",
-    "@prisma/client": "^5.5.2",
-    "dotenv": "^16.3.1",
-    "@chinese-chess/utils": "workspace:*"
+    "@chinese-chess/utils": "workspace:*",
+    "@planetscale/database": "^1.11.0",
+    "drizzle-orm": "^0.29.0"
   }
 }

@@ -1,9 +1,8 @@
-import { db } from '@/lib/db';
+import { User, db } from '@/db/schema';
 import { ApiGatewayManagementApiClient, PostToConnectionCommand } from '@aws-sdk/client-apigatewaymanagementapi';
-import { User } from '@prisma/client';
-import { GamesService } from './games.service';
 import { RoomsService } from './rooms.service';
 import { UsersService } from './users.service';
+import { GamesService } from './games.service';
 
 export class ConnectionService {
   gateway: ApiGatewayManagementApiClient;
@@ -14,59 +13,19 @@ export class ConnectionService {
     });
   }
   async joinRoom(roomID: string, user: User) {
-    const createdUser = await UsersService.create(user);
-    let room = await db.room.findUnique({
-      where: {
-        id: roomID,
-      },
+    let room = await db.query.rooms.findFirst({
+      where: (rooms, { eq }) => eq(rooms.id, roomID),
     });
-    if (room) {
-      await db.room.update({
-        where: {
-          id: roomID,
-        },
-        data: {
-          users: {
-            connectOrCreate: {
-              where: {
-                id: createdUser.id,
-              },
-              create: {
-                id: createdUser.id,
-                username: user.username,
-              },
-            },
-          },
-        },
-      });
-    } else {
-      room = await db.room.create({
-        data: {
-          id: roomID,
-          users: {
-            connect: {
-              id: createdUser.id,
-            },
-          },
-          game: {
-            create: {
-              id: roomID,
-            },
-          },
-        },
-      });
+    if (!room) {
+      await RoomsService.create(roomID);
     }
-    return {
-      room,
-      user: createdUser,
-    };
+    await UsersService.create(user);
+    await UsersService.updateUserOnRoom(user.id, roomID);
   }
 
   async removeConnection(roomID: string, userID: string) {
     await GamesService.removePlayer(roomID, userID);
-    const room = await RoomsService.removeUserOnRoom(roomID, userID);
     await UsersService.delete(userID);
-    return room;
   }
 
   async publish(event: AWSLambda.APIGatewayProxyWebsocketEventV2, data: string) {

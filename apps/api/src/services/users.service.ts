@@ -1,28 +1,22 @@
-import { db } from '@/lib/db';
-import { User } from '@prisma/client';
+import { User, db, users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export class UsersService {
   static async getBy(userID: string) {
-    const user = await db.user.findUnique({
-      where: {
-        id: userID,
-      },
+    const user = await db.query.users.findFirst({
+      where: (users, { eq }) => eq(users.id, userID),
     });
     return user;
   }
 
   static async create(user: User) {
-    return db.user.create({
-      data: user,
-    });
+    await db.insert(users).values(user);
   }
 
-  static async getAllBy(roomID: string) {
-    const room = await db.room.findUnique({
-      where: {
-        id: roomID,
-      },
-      include: {
+  static async getAllBy(roomID: string): Promise<User[]> {
+    const room = await db.query.rooms.findFirst({
+      where: (rooms, { eq }) => eq(rooms.id, roomID),
+      with: {
         users: true,
       },
     });
@@ -30,10 +24,14 @@ export class UsersService {
   }
 
   static async delete(userID: string) {
-    return db.user.deleteMany({
-      where: {
-        id: userID,
-      },
-    });
+    return db.delete(users).where(eq(users.id, userID));
+  }
+
+  static async removeUserOnRoom(userID: string) {
+    return db.update(users).set({ roomID: undefined }).where(eq(users.id, userID));
+  }
+
+  static async updateUserOnRoom(userID: string, roomID: string) {
+    return db.update(users).set({ roomID }).where(eq(users.id, userID));
   }
 }
