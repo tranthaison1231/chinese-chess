@@ -12,6 +12,10 @@ export class GamesService {
     return game;
   }
 
+  static async create(game: Pick<Game, 'id' | 'roomID'>) {
+    return db.insert(games).values(game);
+  }
+
   static async findByID(gameID: string): Promise<Game | undefined> {
     return db.query.games.findFirst({
       where: (games, { eq }) => eq(games.id, gameID),

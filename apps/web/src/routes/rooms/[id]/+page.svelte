@@ -42,7 +42,9 @@
 			const data = JSON.parse(event.data);
 			const { action } = data;
 			if (action === ACTIONS.ROOM.INFO) {
-				$room = data.room;
+				if(data.room){
+					$room = data.room;
+				}
 			}
 			if (action === ACTIONS.ROOM.ME) {
 				$me = data.me;
@@ -171,7 +173,7 @@
 			<div class="mb-4 space-y-2">
 				<button
 					class={cn('relative w-full border p-2 text-center text-xl', {
-						'border-primary': $room.game?.turn === Color.RED && isGameActive
+						'border-primary': $room?.game?.turn === Color.RED && isGameActive
 					})}
 					on:click={() => joinSit(1)}
 				>
@@ -187,7 +189,7 @@
 				{/key}
 				<button
 					class={cn('relative w-full border p-2 text-center text-xl', {
-						'border-primary': $room.game?.turn === Color.BLACK && isGameActive
+						'border-primary': $room?.game?.turn === Color.BLACK && isGameActive
 					})}
 					on:click={() => joinSit(2)}
 				>

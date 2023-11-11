@@ -18,14 +18,19 @@ export class ConnectionService {
     });
     if (!room) {
       await RoomsService.create(roomID);
+      await GamesService.create({
+        id: roomID,
+        roomID: roomID,
+      });
     }
-    await UsersService.create(user);
-    await UsersService.updateUserOnRoom(user.id, roomID);
+    await UsersService.create({
+      ...user,
+      roomID: roomID,
+    });
   }
 
   async removeConnection(roomID: string, userID: string) {
-    await GamesService.removePlayer(roomID, userID);
-    await UsersService.delete(userID);
+    await Promise.all([GamesService.removePlayer(roomID, userID), UsersService.delete(userID)]);
   }
 
   async publish(event: AWSLambda.APIGatewayProxyWebsocketEventV2, data: string) {

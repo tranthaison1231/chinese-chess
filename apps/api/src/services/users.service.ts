@@ -30,8 +30,4 @@ export class UsersService {
   static async removeUserOnRoom(userID: string) {
     return db.update(users).set({ roomID: undefined }).where(eq(users.id, userID));
   }
-
-  static async updateUserOnRoom(userID: string, roomID: string) {
-    return db.update(users).set({ roomID }).where(eq(users.id, userID));
-  }
 }
