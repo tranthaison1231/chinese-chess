@@ -1,9 +1,9 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { db, games } from './schema';
+import { db, users } from './schema';
 
 async function run() {
-  const data = await db.delete(games);
+  const data = await db.delete(users);
   console.log(data);
 }
 
