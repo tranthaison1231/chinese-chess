@@ -3,13 +3,14 @@
 ## Technology
 
 ### Tools
-- 🦊 Husky for Git Hooks
-- 📏 Linter with ESLint
-- 🔥 Type checking TypeScript
+- ✅ Husky for Git Hooks
+- ✅ Linter with ESLint
+- ✅ Type checking TypeScript
+- ✅ Monorepo with turborepo
 
 ### Backend
-- ✅  Serverless with AWS Lambda, API Gateway, Cloudfront
-- ✅  Database exploration with Drizzle Studio and CLI migration tool with Drizzle Kit
+- ✅ Serverless with AWS Lambda, API Gateway, Cloudfront
+- ✅ Database exploration with Drizzle Studio and CLI migration tool with Drizzle Kit
 - 🔴 Validation library with Zod
 
 ### Frontend
