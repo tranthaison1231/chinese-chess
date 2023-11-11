@@ -1,13 +1,6 @@
 module.exports = {
 	root: true,
-	extends: [
-		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
-		'plugin:svelte/recommended',
-		'prettier'
-	],
-	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint'],
+	extends: ['@chinese-chess/eslint-config-custom', 'plugin:svelte/recommended'],
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 2020,

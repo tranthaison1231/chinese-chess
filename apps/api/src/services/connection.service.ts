@@ -13,7 +13,7 @@ export class ConnectionService {
     });
   }
   async joinRoom(roomID: string, user: User) {
-    let room = await db.query.rooms.findFirst({
+    const room = await db.query.rooms.findFirst({
       where: (rooms, { eq }) => eq(rooms.id, roomID),
     });
     if (!room) {

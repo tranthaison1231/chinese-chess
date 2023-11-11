@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "serverless offline start",
     "deploy": "serverless deploy",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.126",
@@ -19,12 +20,13 @@
     "serverless-prune-plugin": "^2.0.2",
     "ts-loader": "^9.5.0",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@chinese-chess/eslint-config-custom": "workspace:*",
+    "@chinese-chess/tsconfig": "workspace:*"
   },
   "dependencies": {
     "@aws-sdk/client-apigatewaymanagementapi": "^3.445.0",
     "@chinese-chess/utils": "workspace:*",
-    "@chinese-chess/db": "workspace:*",
-    "@chinese-chess/tsconfig": "workspace:*"
+    "@chinese-chess/db": "workspace:*"
   }
 }

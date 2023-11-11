@@ -9,13 +9,14 @@
     "check": "tsc --noEmit"
   },
   "devDependencies": {
+    "@chinese-chess/tsconfig": "workspace:*",
     "@types/node": "^20.8.10",
     "dotenv": "^16.3.1",
-    "ts-node": "^10.9.1",
-    "@chinese-chess/tsconfig": "workspace:*"
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1"
   },
   "dependencies": {
-    "drizzle-orm": "^0.29.0",
-    "@planetscale/database": "^1.11.0"
+    "@planetscale/database": "^1.11.0",
+    "drizzle-orm": "^0.29.0"
   }
 }

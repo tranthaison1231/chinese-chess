@@ -9,7 +9,8 @@ let connection;
 export const enterRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
   connection = new ConnectionService();
   const body = JSON.parse(event.body ?? '{}');
-  let { roomID, username } = body;
+  const { roomID } = body;
+  let { username } = body;
   if (!username) {
     username = event.requestContext.connectionId;
   }
