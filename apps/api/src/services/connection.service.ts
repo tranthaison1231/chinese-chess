@@ -1,4 +1,4 @@
-import { User, db } from '@/db/schema';
+import { User, db } from '@chinese-chess/db';
 import { ApiGatewayManagementApiClient, PostToConnectionCommand } from '@aws-sdk/client-apigatewaymanagementapi';
 import { RoomsService } from './rooms.service';
 import { UsersService } from './users.service';

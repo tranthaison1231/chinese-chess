@@ -81,18 +81,3 @@ export const gamesRelations = relations(games, ({ one }) => ({
     references: [users.id],
   }),
 }));
-
-const connection = connect({
-  url: process.env.DATABASE_URL,
-});
-
-export const db = drizzle(connection, {
-  schema: {
-    users,
-    rooms,
-    games,
-    gamesRelations,
-    usersRelations,
-    roomsRelations,
-  },
-});

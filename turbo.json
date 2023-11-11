@@ -10,6 +10,7 @@
     "lint": {},
     "format": {},
     "check": {},
+    "seed": {},
     "dev": {
       "cache": false,
       "persistent": true,

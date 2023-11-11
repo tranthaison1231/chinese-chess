@@ -1,5 +1,4 @@
-import { db, rooms, users } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { db, rooms } from '@chinese-chess/db';
 
 export class RoomsService {
   static async create(roomID: string) {

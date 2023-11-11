@@ -1,5 +1,4 @@
-import { User, db, users } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { User, db, eq, users } from '@chinese-chess/db';
 
 export class UsersService {
   static async getBy(userID: string) {

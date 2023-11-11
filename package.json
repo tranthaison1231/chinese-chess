@@ -14,7 +14,8 @@
     "check": "turbo run check --parallel",
     "dev:web": "turbo run dev --filter=web",
     "dev:api": "turbo run dev --filter=api",
-    "deploy:api": "turbo run deploy --filter=api"
+    "deploy:api": "turbo run deploy --filter=api",
+    "db:seed": "turbo run seed --filter=db"
   },
   "keywords": [],
   "author": "Son Tran",

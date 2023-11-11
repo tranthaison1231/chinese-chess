@@ -1,5 +1,4 @@
-import { Game, db, games } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { Game, db, eq, games } from '@chinese-chess/db';
 
 export class GamesService {
   static async start(gameID: string) {
