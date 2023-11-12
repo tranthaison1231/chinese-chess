@@ -4,11 +4,12 @@
 	import type { Message } from '$lib/utils/type';
 	import { SendHorizonal, ThumbsUp } from 'lucide-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import EmojiPicker from './EmojiPicker.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let messages: Message[] = [];
-	let message: string;
+	let message: string = '';
 	$: isMessageValid = message?.trim().length > 0;
 	export let chatEl: HTMLDivElement | null;
 
@@ -52,12 +53,15 @@
 			{/each}
 		</div>
 		<div class="flex items-center gap-1">
-			<input
-				placeholder="Aa"
-				class="input bg-gray-100 focus-visible:ring-transparent"
-				bind:value={message}
-				on:keyup|preventDefault={onKeyUp}
-			/>
+			<div class="relative w-full">
+				<input
+					placeholder="Aa"
+					class="input bg-gray-100 focus-visible:ring-transparent"
+					bind:value={message}
+					on:keyup|preventDefault={onKeyUp}
+				/>
+				<EmojiPicker onEmojiSelect={(emoji) => message = message + emoji.native} />
+			</div>
 			{#if isMessageValid}
 				<button on:click={() => {
 					sendMessage(message);
