@@ -21,3 +21,13 @@
 
 ### Requirements
 - Node.js 18+ and pnpm
+
+## Start project 
+
+```
+git clone https://github.com/tranthaison1231/chinese-chess.git
+pnpm install
+cd apps/api && ln -s ../../.env .env
+cd apps/web && ln -s ../../.env .env
+pnpm run dev
+```
