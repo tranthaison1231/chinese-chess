@@ -7,12 +7,13 @@
 - ✅ Linter with ESLint
 - ✅ Type checking TypeScript
 - ✅ Monorepo with Turborepo
+- ✅ CI-CD with auto deployment 
 
 ### Backend
 - ✅ Database with MySQL and PlanetScale
-- ✅ Serverless with AWS Lambda, API Gateway, Cloudfront
+- ✅ Web Socket Serverless with AWS Lambda, API Gateway, Cloudfront
 - ✅ Database exploration with Drizzle Studio and CLI migration tool with Drizzle Kit
-- 🔴 Validation library with Zod
+- ⌛ Validation library with Zod
 
 ### Frontend
 - ✅ Sveltekit 
