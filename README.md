@@ -19,6 +19,7 @@
 - ✅ Sveltekit 
 - ✅ UI Library with shacdn-svelte
 - ✅ Deploy on Vercel 
+- ✅ Emoji picker with emoji-mart
 
 ### Requirements
 - Node.js 18+ and pnpm
