@@ -20,7 +20,7 @@
 		"eslint-plugin-svelte": "^2.35.0",
 		"postcss": "^8.4.31",
 		"postcss-nesting": "^12.0.1",
-		"prettier": "^3.0.3",
+		"prettier": "^3.1.0",
 		"prettier-plugin-organize-attributes": "^1.0.0",
 		"prettier-plugin-organize-imports": "^3.2.4",
 		"prettier-plugin-svelte": "^3.1.0",
@@ -35,10 +35,13 @@
 	"dependencies": {
 		"@chinese-chess/utils": "workspace:*",
 		"@emoji-mart/data": "^1.1.2",
+		"@sveltestack/svelte-query": "^1.6.0",
 		"bits-ui": "^0.9.4",
 		"clsx": "^2.0.0",
 		"emoji-mart": "^5.5.2",
+		"linkify-html": "^4.1.2",
 		"lucide-svelte": "^0.292.0",
+		"open-graph-scraper": "^6.3.2",
 		"tailwind-merge": "^2.0.0",
 		"tailwind-variants": "^0.1.18"
 	}
