@@ -7,6 +7,7 @@
 		defaultOptions: {
 			queries: {
 				refetchIntervalInBackground: false,
+				refetchOnWindowFocus: false,
 				retry: false
 			}
 		}
