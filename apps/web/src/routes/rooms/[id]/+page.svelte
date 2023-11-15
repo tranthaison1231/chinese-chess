@@ -16,12 +16,14 @@
 	import { Status, type Location, type Message, Color } from '$lib/utils/type';
 	import { LogOut, X } from 'lucide-svelte';
 	import { onMount, tick } from 'svelte';
+	import peer from '$lib/services/peer';
 
 	const { id: roomID } = $page.params;
 	let ws: WebSocket;
 	let username: string | null;
 	let messages: Message[] = [];
 	let chatEl: HTMLDivElement | null;
+	let myStream: MediaStream | null
 
 	$: gameID = $room?.game?.id;
 	$: player1 = $room?.game?.player1;
@@ -34,6 +36,20 @@
 		username = searchParams.get('username');
 		ws = new WebSocket(PUBLIC_API_URL);
 
+		peer.peerConnection?.addEventListener('track', event => {
+			if(event.streams[0]) {
+				const element = document.querySelector('#voice-recorder') as HTMLAudioElement;
+				element.srcObject = event.streams[0]
+				element.play()
+			}
+		})
+
+		peer.peerConnection?.addEventListener('negotiationneeded',async () => {
+			console.log('Negotiation Needed');
+			const offer = await peer.makeCall();
+			ws.send(JSON.stringify({ action: ACTIONS.VOICE.NEGOTIATION, offer, roomID }))
+		})
+
 		ws.onopen = () => {
 			ws.send(JSON.stringify({ action: ACTIONS.ROOM.ENTER, username, roomID }));
 		};
@@ -44,6 +60,10 @@
 			if (action === ACTIONS.ROOM.INFO) {
 				if(data.room){
 					$room = data.room;
+
+					// Make a call to other users in room
+					const offer = await peer.makeCall()
+					ws.send(JSON.stringify({ action: ACTIONS.VOICE.MAKE_CALL, offer, roomID }))
 				}
 			}
 			if (action === ACTIONS.ROOM.ME) {
@@ -85,6 +105,39 @@
 						title: 'You lose!'
 					});
 				}
+			}
+
+			if(action === ACTIONS.VOICE.INCOMING_CALL) {
+				const { offer: incomingOffer, from } = data
+				const answer = await peer.createAnswer(incomingOffer)
+
+				ws.send(JSON.stringify({
+					action: ACTIONS.VOICE.ACCEPTED_CALL,
+					answer,
+					from,
+				}))
+			}
+
+			if(action === ACTIONS.VOICE.ACCEPTED_CALL) {
+				const { answer } = data
+				await peer.setRemoteDescription(answer)
+			}
+
+			if(action === ACTIONS.VOICE.NEGOTIATING) {
+				const { offer } = data
+				const answer = await peer.createAnswer(offer);
+
+				ws.send(JSON.stringify({
+					action: ACTIONS.VOICE.NEGOTIATION_DONE,
+					answer,
+					roomID: $room.id
+				}))
+			}
+
+			if(action === ACTIONS.VOICE.NEGOTIATION_DONE) {
+				const { answer } = data
+				console.log({answer});
+				await peer.setRemoteDescription(answer)
 			}
 		};
 	});
@@ -151,6 +204,27 @@
 		ws.send(JSON.stringify({ action: ACTIONS.ROOM.MESSAGE, content, roomID, user: $me }));
 	}
 
+	function onGetUserMediaError() {
+
+	}
+
+	async function onTurnOnVoiceChat(stream: MediaStream) {
+		myStream = stream
+		const tracks = stream.getAudioTracks();
+		for(const track of tracks) {
+			peer.peerConnection?.addTrack(track, stream)
+		}
+	}
+
+	async function onTurnOffVoiceChat() {
+		const tracks = myStream?.getAudioTracks();
+		for(const track of tracks ?? []) {
+			if(track.readyState === 'live') {
+				track.stop()
+			}
+		}
+	}
+
 	beforeNavigate(({ cancel }) => {
 		if (!confirm('When you leave, you will lose the game?')) {
 			cancel();
@@ -209,6 +283,9 @@
 				<Button variant="destructive" on:click={handleTakeBack}>Take back</Button>
 			{/if}
 		</div>
-		<ChatList bind:chatEl {messages} on:sendMessage={sendMessage} />
+		<ChatList bind:chatEl {messages} on:sendMessage={sendMessage} {onGetUserMediaError} {onTurnOnVoiceChat} {onTurnOffVoiceChat} />
 	</div>
+	<audio id="voice-recorder" playsinline autoplay>
+		<source  type="audio/mpeg" />
+	</audio>
 </div>
