@@ -10,7 +10,7 @@
   const isMe = message.username === $me?.username
 	const content = linkifyHtml(message.content, {
 		target: "_blank",
-		className: "underline break-words",
+		className: "underline break-all",
 	});
 	$: url = content.match(/https?:\/\/\S+/gi)?.[0];
 </script>
