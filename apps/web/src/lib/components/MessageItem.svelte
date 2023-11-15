@@ -12,7 +12,8 @@
 		target: "_blank",
 		className: "underline break-all",
 	});
-	$: url = content.match(/https?:\/\/\S+/gi)?.[0];
+	$: url = message.content.match(/(?:https?|ftp):\/\/[^\s]+/g)?.[0];
+
 </script>
 
 <div
