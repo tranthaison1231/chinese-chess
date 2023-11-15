@@ -1,14 +1,16 @@
-import { GamesService } from '@/services/games.service';
-import { ACTIONS } from '@chinese-chess/utils';
-import { ConnectionService } from '@/services/connection.service';
-import { RoomsService } from '@/services/rooms.service';
-import { UsersService } from '@/services/users.service';
+import { GamesService } from "@/services/games.service";
+import { ACTIONS } from "@chinese-chess/utils";
+import { ConnectionService } from "@/services/connection.service";
+import { RoomsService } from "@/services/rooms.service";
+import { UsersService } from "@/services/users.service";
 
 let connection;
 
-export const enterRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
+export const enterRoom = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
   connection = new ConnectionService();
-  const body = JSON.parse(event.body ?? '{}');
+  const body = JSON.parse(event.body ?? "{}");
   const { roomID } = body;
   let { username } = body;
   if (!username) {
@@ -40,7 +42,7 @@ export const enterRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
         event,
         JSON.stringify({
           action: ACTIONS.ROOM.MESSAGE,
-          username: 'System',
+          username: "System",
           content: `${user.username} has joined the room`,
         })
       ),
@@ -60,12 +62,18 @@ export const enterRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
   }
 };
 
-export const playerSit = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
+export const playerSit = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
   connection = new ConnectionService();
-  const body = JSON.parse(event.body ?? '{}');
+  const body = JSON.parse(event.body ?? "{}");
   const { roomID, gameID, sitID } = body;
   try {
-    await GamesService.updateSit(gameID, +sitID, event.requestContext.connectionId);
+    await GamesService.updateSit(
+      gameID,
+      +sitID,
+      event.requestContext.connectionId
+    );
     const room = await RoomsService.getBy(roomID);
     await connection.publishToRoom(
       roomID,
@@ -83,9 +91,11 @@ export const playerSit = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
   }
 };
 
-export const startGame = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
+export const startGame = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
   connection = new ConnectionService();
-  const body = JSON.parse(event.body ?? '{}');
+  const body = JSON.parse(event.body ?? "{}");
   const { gameID, roomID } = body;
   try {
     await GamesService.start(gameID);
@@ -106,12 +116,14 @@ export const startGame = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
   }
 };
 
-export const moveGame = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
+export const moveGame = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
   connection = new ConnectionService();
-  const body = JSON.parse(event.body ?? '{}');
+  const body = JSON.parse(event.body ?? "{}");
   const { roomID, from, to, gameID, turn } = body;
   try {
-    await GamesService.updateTurn(gameID, turn === 'RED' ? 'BLACK' : 'RED');
+    await GamesService.updateTurn(gameID, turn === "RED" ? "BLACK" : "RED");
     const room = await RoomsService.getBy(roomID);
     await connection.publishToRoom(
       roomID,
@@ -131,24 +143,35 @@ export const moveGame = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2)
   }
 };
 
-export const leaveRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
+export const leaveRoom = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
   const { connectionId } = event.requestContext;
   try {
     const connection = new ConnectionService();
     const user = await UsersService.getBy(connectionId);
     if (user?.roomID) {
       const room = await RoomsService.getBy(user.roomID);
-      if (room?.game?.status === 'ACTIVE' && (room?.game?.player1ID === user.id || room?.game?.player2ID === user.id)) {
+      if (
+        room?.game?.status === "ACTIVE" &&
+        (room?.game?.player1ID === user.id || room?.game?.player2ID === user.id)
+      ) {
         await connection.publishToRoom(
           user.roomID,
           event,
           JSON.stringify({
             action: ACTIONS.GAME.END,
-            winner: user.id === room?.game?.player1ID ? room?.game?.player2 : room?.game?.player1,
+            winner:
+              user.id === room?.game?.player1ID
+                ? room?.game?.player2
+                : room?.game?.player1,
           })
         );
       }
-      const updatedRoom = await connection.removeConnection(user.roomID, connectionId);
+      const updatedRoom = await connection.removeConnection(
+        user.roomID,
+        connectionId
+      );
       await Promise.all([
         connection.publishToRoom(
           user.roomID,
@@ -163,7 +186,7 @@ export const leaveRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
           event,
           JSON.stringify({
             action: ACTIONS.ROOM.MESSAGE,
-            username: 'System',
+            username: "System",
             content: `${user.username} has left the room`,
           })
         ),
@@ -178,9 +201,11 @@ export const leaveRoom = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
   }
 };
 
-export const sendMessage = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
+export const sendMessage = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
   connection = new ConnectionService();
-  const body = JSON.parse(event.body ?? '{}');
+  const body = JSON.parse(event.body ?? "{}");
   const { roomID, content, user } = body;
   try {
     await connection.publishToRoom(
@@ -200,9 +225,11 @@ export const sendMessage = async (event: AWSLambda.APIGatewayProxyWebsocketEvent
   }
 };
 
-export const removeSit = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
+export const removeSit = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
   connection = new ConnectionService();
-  const body = JSON.parse(event.body ?? '{}');
+  const body = JSON.parse(event.body ?? "{}");
   const { roomID, gameID, sitID } = body;
   try {
     await GamesService.removeSit(gameID, +sitID);
@@ -223,9 +250,11 @@ export const removeSit = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2
   }
 };
 
-export const endGame = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) => {
+export const endGame = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
   connection = new ConnectionService();
-  const body = JSON.parse(event.body ?? '{}');
+  const body = JSON.parse(event.body ?? "{}");
   const { gameID, roomID, winner } = body;
   try {
     await GamesService.end(gameID);
@@ -248,6 +277,104 @@ export const endGame = async (event: AWSLambda.APIGatewayProxyWebsocketEventV2) 
         })
       ),
     ]);
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const call = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
+  connection = new ConnectionService();
+  const body = JSON.parse(event.body ?? "{}");
+  const { roomID, offer } = body;
+
+  await connection.publishToRoom(
+    roomID,
+    event,
+    JSON.stringify({
+      action: ACTIONS.VOICE.INCOMING_CALL,
+      offer,
+      from: event.requestContext.connectionId,
+    }),
+    true
+  );
+
+  try {
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const acceptCall = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
+  connection = new ConnectionService();
+  const body = JSON.parse(event.body ?? "{}");
+
+  const { from, answer } = body;
+
+  await connection.publishToId(
+    from,
+    JSON.stringify({
+      action: ACTIONS.VOICE.ACCEPTED_CALL,
+      answer,
+    })
+  );
+};
+
+export const negotiateCall = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
+  connection = new ConnectionService();
+  const body = JSON.parse(event.body ?? "{}");
+  const { roomID, offer } = body;
+
+  await connection.publishToRoom(
+    roomID,
+    event,
+    JSON.stringify({
+      action: ACTIONS.VOICE.NEGOTIATING,
+      offer,
+      from: event.requestContext.connectionId,
+    }),
+    true
+  );
+
+  try {
+    return {
+      statusCode: 200,
+    };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const negotiateDone = async (
+  event: AWSLambda.APIGatewayProxyWebsocketEventV2
+) => {
+  connection = new ConnectionService();
+  const body = JSON.parse(event.body ?? "{}");
+  const { roomID, answer } = body;
+
+  await connection.publishToRoom(
+    roomID,
+    event,
+    JSON.stringify({
+      action: ACTIONS.VOICE.NEGOTIATION_DONE,
+      answer,
+      from: event.requestContext.connectionId,
+    }),
+    true
+  );
+
+  try {
     return {
       statusCode: 200,
     };
