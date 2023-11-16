@@ -31,24 +31,70 @@
 	$: isGameActive = $room?.game?.status === Status.ACTIVE;
 	$: isShowReadyButton = Boolean(!isGameActive && isPlayer && player1?.id && player2?.id);
 
+	const handleGetTracks = (event: RTCTrackEvent) => {
+		if(event.streams[0]) {
+			console.log('GOT TRACKS!!!', event.streams[0]);
+			const element = document.querySelector('#remote-stream') as HTMLVideoElement;
+			element.removeAttribute('srcObject')
+			element.srcObject = event.streams[0];
+
+			element.addEventListener('loadedmetadata', () => {
+				element.play()
+			})
+			element.onloadstart = () => {console.log('onload start')}
+			element.onerror = (e) => {console.log('error',e)}
+		}
+	}
+
+	const makeCall = async () => {
+		console.log('Make call from ' + $me?.id + ' ' + $me?.username);
+
+		const offer = await peer.makeCall()
+		ws.send(JSON.stringify({ action: ACTIONS.VOICE.MAKE_CALL, offer, roomID }))
+	}
+
+	const handleIncomingCall = async (offer: RTCSessionDescriptionInit, from: string) => { 
+		const answer = await peer.createAnswer(offer)
+		console.log('Incoming call from ' + from);
+		ws.send(JSON.stringify({
+			action: ACTIONS.VOICE.ACCEPT_CALL,
+			answer,
+			from,
+		}))
+	}
+
+	const acceptCall = async (answer: RTCSessionDescriptionInit) => {
+		await peer.setRemoteDescription(answer)
+	}
+
+	const negotiationDone = async (answer: RTCSessionDescriptionInit) => {
+		await peer.setRemoteDescription(answer)
+	}
+
+	const onNegotiationNeed = async () => {
+		console.log('Negotiation Needed');
+		const offer = await peer.makeCall();
+		ws.send(JSON.stringify({ action: ACTIONS.VOICE.NEGOTIATION, offer, roomID }))
+	}
+
+	const onNegotiating  = async (offer: RTCSessionDescriptionInit) => {
+		const answer = await peer.createAnswer(offer);
+
+		ws.send(JSON.stringify({
+			action: ACTIONS.VOICE.NEGOTIATION_DONE,
+			answer,
+			roomID: $room.id
+		}))
+	}
+
 	onMount(() => {
 		const searchParams = new URLSearchParams(window.location.search);
 		username = searchParams.get('username');
 		ws = new WebSocket(PUBLIC_API_URL);
 
-		peer.peerConnection?.addEventListener('track', event => {
-			if(event.streams[0]) {
-				const element = document.querySelector('#voice-recorder') as HTMLAudioElement;
-				element.srcObject = event.streams[0]
-				element.play()
-			}
-		})
+		peer.peerConnection?.addEventListener('track', handleGetTracks)
 
-		peer.peerConnection?.addEventListener('negotiationneeded',async () => {
-			console.log('Negotiation Needed');
-			const offer = await peer.makeCall();
-			ws.send(JSON.stringify({ action: ACTIONS.VOICE.NEGOTIATION, offer, roomID }))
-		})
+		peer.peerConnection?.addEventListener('negotiationneeded', onNegotiationNeed)
 
 		ws.onopen = () => {
 			ws.send(JSON.stringify({ action: ACTIONS.ROOM.ENTER, username, roomID }));
@@ -60,14 +106,11 @@
 			if (action === ACTIONS.ROOM.INFO) {
 				if(data.room){
 					$room = data.room;
-
-					// Make a call to other users in room
-					const offer = await peer.makeCall()
-					ws.send(JSON.stringify({ action: ACTIONS.VOICE.MAKE_CALL, offer, roomID }))
 				}
 			}
 			if (action === ACTIONS.ROOM.ME) {
 				$me = data.me;
+				await makeCall()
 			}
 			if (action === ACTIONS.ROOM.MESSAGE) {
 				messages = [
@@ -108,36 +151,28 @@
 			}
 
 			if(action === ACTIONS.VOICE.INCOMING_CALL) {
-				const { offer: incomingOffer, from } = data
-				const answer = await peer.createAnswer(incomingOffer)
-
-				ws.send(JSON.stringify({
-					action: ACTIONS.VOICE.ACCEPTED_CALL,
-					answer,
-					from,
-				}))
+				const { offer, from } = data
+				await handleIncomingCall(offer, from)
 			}
 
-			if(action === ACTIONS.VOICE.ACCEPTED_CALL) {
-				const { answer } = data
-				await peer.setRemoteDescription(answer)
+			if(action === ACTIONS.VOICE.ACCEPT_CALL) {
+				const { answer, from } = data
+				console.log('Accept call from ' + from);
+				await acceptCall(answer)
 			}
 
 			if(action === ACTIONS.VOICE.NEGOTIATING) {
 				const { offer } = data
-				const answer = await peer.createAnswer(offer);
 
-				ws.send(JSON.stringify({
-					action: ACTIONS.VOICE.NEGOTIATION_DONE,
-					answer,
-					roomID: $room.id
-				}))
+				console.log('Negotiating from' + $me?.id);
+				onNegotiating(offer)
 			}
 
 			if(action === ACTIONS.VOICE.NEGOTIATION_DONE) {
 				const { answer } = data
-				console.log({answer});
-				await peer.setRemoteDescription(answer)
+				console.log('Negotiation Done');
+
+				negotiationDone(answer)
 			}
 		};
 	});
@@ -204,32 +239,40 @@
 		ws.send(JSON.stringify({ action: ACTIONS.ROOM.MESSAGE, content, roomID, user: $me }));
 	}
 
-	function onGetUserMediaError() {
-
+	function onGetUserMediaError(error: Error) {
+		notification.error({
+			title: 'Error Enabling audio! Error: ' + error.message
+		})
 	}
 
 	async function onTurnOnVoiceChat(stream: MediaStream) {
 		myStream = stream
-		const tracks = stream.getAudioTracks();
+		const tracks = stream.getTracks();
 		for(const track of tracks) {
 			peer.peerConnection?.addTrack(track, stream)
 		}
+		
+		const element = document.querySelector('#my-stream') as HTMLVideoElement;
+		element.srcObject = stream;
+		element.addEventListener('loadedmetadata', () => {
+			element.play()
+		})
 	}
 
 	async function onTurnOffVoiceChat() {
-		const tracks = myStream?.getAudioTracks();
+		const tracks = myStream?.getTracks();
 		for(const track of tracks ?? []) {
 			if(track.readyState === 'live') {
-				track.stop()
+				track.stop();
 			}
 		}
 	}
 
-	beforeNavigate(({ cancel }) => {
-		if (!confirm('When you leave, you will lose the game?')) {
-			cancel();
-		}
-	});
+	// beforeNavigate(({ cancel }) => {
+	// 	if (!confirm('When you leave, you will lose the game?')) {
+	// 		cancel();
+	// 	}
+	// });
 </script>
 
 <div class="flex h-full w-full max-w-7xl justify-center gap-10 py-10">
@@ -285,7 +328,20 @@
 		</div>
 		<ChatList bind:chatEl {messages} on:sendMessage={sendMessage} {onGetUserMediaError} {onTurnOnVoiceChat} {onTurnOffVoiceChat} />
 	</div>
-	<audio id="voice-recorder" playsinline autoplay>
+	<!-- <audio id="my-recorder" playsinline autoplay >
 		<source  type="audio/mpeg" />
 	</audio>
+	<audio id="voice-recorder" playsinline autoplay >
+		<source  type="audio/mpeg" />
+	</audio> -->
+	<div>
+		My Stream
+		<!-- svelte-ignore a11y-media-has-caption -->
+		<video id="my-stream" autoplay width="640" height="480">
+		</video>
+		Remote stream
+		<!-- svelte-ignore a11y-media-has-caption -->
+		<video id="remote-stream" autoplay width="640" height="480">
+		</video>
+	</div>
 </div>

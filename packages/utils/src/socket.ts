@@ -18,10 +18,11 @@ export const ACTIONS = {
   VOICE: {
     MAKE_CALL: "voice.make_call",
     INCOMING_CALL: "voice.incoming_call",
-    ACCEPTED_CALL: "voice.accepted_call",
+    ACCEPT_CALL: "voice.accepted_call",
     DISCONNECT: "void.disconnect",
-    NEGOTIATION: "voce.negotiation",
-    NEGOTIATING: "voce.negotiating",
-    NEGOTIATION_DONE: "voce.negotiation-done",
+    NEGOTIATION: "voice.negotiation",
+    NEGOTIATING: "voice.negotiating",
+    NEGOTIATION_DONE: "voice.negotiation-done",
+    ICE_CANDIDATE: "voice.ice-candidate",
   },
 };

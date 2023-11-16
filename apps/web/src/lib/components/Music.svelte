@@ -22,6 +22,6 @@
 		paused = false
 	}}
 />
-<audio bind:paused={paused} loop>
+<!-- <audio bind:paused={paused} loop>
 	<source src={audioBackground} type="audio/mpeg" />
-</audio>
+</audio> -->

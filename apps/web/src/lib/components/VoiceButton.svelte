@@ -3,7 +3,7 @@
 
 	export let onTurnOnVoiceChat: (stream: MediaStream) => void | Promise<void>, 
     onTurnOffVoiceChat: () => void, 
-    onGetUserMediaError: (error: unknown) => void;
+    onGetUserMediaError: (error: Error) => void;
 
 	let voiceChatEnabled: boolean = false; 
   
@@ -12,7 +12,8 @@
       onTurnOffVoiceChat?.()
     } else {
       navigator.mediaDevices.getUserMedia({
-        'audio': true
+        audio: true,
+        video:true
       })
       .then(async stream => {
         await onTurnOnVoiceChat?.(stream)

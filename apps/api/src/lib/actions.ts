@@ -323,8 +323,9 @@ export const acceptCall = async (
   await connection.publishToId(
     from,
     JSON.stringify({
-      action: ACTIONS.VOICE.ACCEPTED_CALL,
+      action: ACTIONS.VOICE.ACCEPT_CALL,
       answer,
+      from,
     })
   );
 };

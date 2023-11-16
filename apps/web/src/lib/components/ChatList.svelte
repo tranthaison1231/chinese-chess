@@ -11,7 +11,7 @@
 	export let messages: Message[] = [];
 	export let chatEl: HTMLDivElement | null, onTurnOnVoiceChat: (stream: MediaStream) => void, 
 	onTurnOffVoiceChat: () => void, 
-    onGetUserMediaError: (error: unknown) => void;;
+    onGetUserMediaError: (error: Error) => void;;
 	
 	let message: string = '';
 	

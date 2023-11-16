@@ -63,7 +63,7 @@ export async function onHandler(
     case ACTIONS.VOICE.MAKE_CALL:
       await call(event);
       break;
-    case ACTIONS.VOICE.ACCEPTED_CALL:
+    case ACTIONS.VOICE.ACCEPT_CALL:
       await acceptCall(event);
       break;
     case ACTIONS.VOICE.NEGOTIATION:
@@ -72,7 +72,6 @@ export async function onHandler(
     case ACTIONS.VOICE.NEGOTIATION_DONE:
       await negotiateDone(event);
       break;
-
     default:
       break;
   }

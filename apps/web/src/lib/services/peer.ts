@@ -17,7 +17,7 @@ export class PeerService {
 
 	async createAnswer(offer: RTCSessionDescriptionInit) {
 		if (this.peerConnection) {
-			this.peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+			this.peerConnection.setRemoteDescription(offer);
 			const answer = await this.peerConnection.createAnswer();
 			await this.peerConnection.setLocalDescription(new RTCSessionDescription(answer));
 
@@ -35,9 +35,8 @@ export class PeerService {
 
 	async makeCall() {
 		if (this.peerConnection) {
-			const offer = await this.peerConnection.createOffer();
+			const offer = await this.peerConnection.createOffer({});
 			await this.peerConnection.setLocalDescription(new RTCSessionDescription(offer));
-
 			return offer;
 		}
 
